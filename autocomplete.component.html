@@ -1,0 +1,458 @@
+<div class="Top mx-auto ">
+  <h3 id = "heading"> Entertainment Event Ticket Search </h3>
+<form #userForm ="ngForm" (ngSubmit)="onSubmit(userModel)" novalidate>
+     
+<div class="form-group row ml-5 ">
+  <!-- <mat-form-field> -->
+    <label for="keyword" class="col-sm-2 col-form-label">&nbsp;Keyword<span class="text-red">*</span></label>
+    <div class="col-sm-6">
+        <input type="text" #keyword ="ngModel" name="keyword"  [class.is-invalid] = "keyword.invalid && keyword.touched" class="form-control " [(ngModel)]="userModel.keyword" id="keyword" placeholder="Enter Artist, Team or Event Name (eg. Lakers)" required (keyup)="onKeyUp($event)" matInput [matAutocomplete]="auto">
+        <small class ="text-red" [class.d-none]="keyword.valid || keyword.untouched" >Enter the valid keyword</small>
+          <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor='let option of fin_res; let i=index' [value] = "option">
+            {{fin_res[i]}}
+          </mat-option>
+        </mat-autocomplete> 
+             
+
+</div>
+</div>
+
+<div class="form-group row ml-5 px-2">
+  <label for="Category" class="col-sm-2 col-form-label">Category</label>
+  <div class="col-sm-10">
+      <select type="text" class="form-control" id="category" name = "myCategory" [(ngModel)] = "userModel.category" >                 
+        <option value="default" id="default_button" selected >All</option>
+        <option value="KZFzniwnSyZfZ7v7nJ" >music</option>
+        <option value="KZFzniwnSyZfZ7v7nE">sports</option>
+        <option value="KZFzniwnSyZfZ7v7na">Arts & Theatre</option>
+        <option value="KZFzniwnSyZfZ7v7nn">Film</option>
+        <option value="KZFzniwnSyZfZ7v7n1"> Miscellaneous </option> <br>
+      </select>
+      </div>
+  </div>
+
+<div class="form-group row ml-5 px-2">
+<label for="Distance" class="col-sm-2 col-form-label">Distance</label>
+  <div class="form-group col-md-2">            
+  <input type="text" class="form-control" id="distance" name="Distance" placeholder="10" [(ngModel)] = "userModel.distancevalue">
+</div>
+<div class="form-group col-md-2">
+  <select type="text" class="form-control" id="miles_select" name="measureType" placeholder="Miles" [(ngModel)] = "userModel.measureType" >
+    <option value="miles"  id="miles" selected >Miles</option>
+    <option value="km"  id="Kilometer"  >Kilometers</option>
+    </select>
+</div>
+</div>
+
+
+<div class="form-group row ml-5 px-2">
+<label for="from" class="col-sm-2 col-form-label">From<span class="text-red">*</span></label>
+  <div class="col-sm-2 col-form-label col-sm-10 custom-control ">
+   
+
+  <div class="form-check">
+    <input class="form-check-input" type="radio" value='here' name="Here" id="flexRadioDefault1" (click)="locationMethodChange('here')" [(ngModel)] = "userModel.currentLoc" ng-model='isChecked' ng-checked='isChecked' selected> 
+    <!-- <input class="form-check-input" type="radio" name="Here" id="flexRadioDefault1" (change)="locationMethodChange('here')" value='here' checked > -->
+    <label class="form-check-label" for="flexRadioDefault1">
+      
+      Current location
+    </label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" value='other' name="Here" id="flexRadioDefault2" [(ngModel)] = "userModel.other" (click)="locationMethodChange('other')">
+    <!--{{other.touched}}-->
+    <label class="form-check-label" for="flexRadioDefault2">
+      Other. Please specify:
+    </label>
+    <!-- <input type="text" name="location" class="form-control" id="input_others" [(ngModel)] = "userModel.location"> -->
+    <div class="col-sm-6 col-form-label">
+<input type="text"  class ="col-sm-6" #location ="ngModel" name="location" [class.is-invalid] = "location.invalid && location.touched"  [disabled]='loc_bool' required  class="form-control" id="input_others" [(ngModel)] = "userModel.location">
+<small *ngIf= "!loc_bool" class ="text-red" [class.d-none]="location.valid || location.untouched" >Enter a location</small>
+</div>
+  </div>
+     
+</div>
+</div>
+
+<div class="form-group row ml-5 px-2">            
+    <div class="form-group col-md-4 form-control-feedback ">  
+    <label _ngcontent-c1="" class="mr-4">
+      <!-- <button _ngcontent-c1=""  class="btn btn-primary" name = "searchMe" type="submit"  ngModel>
+        <i _ngcontent-c1="" class="material-icons align-bottom"> search </i> Search </button> -->
+
+        <!-- <button type="submit" class="btn btn-primary"  ng-disabled="UserInput.Keyword== '' " >
+          <i class="material-icons">search</i> Search</button> -->
+          <button type="submit" class="btn btn-primary"  [disabled]="userModel.keyword=='' || (userModel.other == 'there' && userModel.location!='') || userModel.currentLoc != 'here'" >
+            <i class="material-icons">search</i> Search</button>
+           
+      </label>     
+      
+    <label _ngcontent-c1="">
+    <button _ngcontent-c1="" class="btn btn-light" type="button" name = "clearMe" (click)="update()" ngModel>
+      <i _ngcontent-c1="" class="material-icons align-bottom"> clear_all </i> Clear </button>
+    </label>
+</div>   
+</div>  
+</form> 
+</div>
+
+
+<!-- <div class="row justify-content-center container-fluid mb-3 ">
+  <div class="col-3 mt-4 px-0 mx-0">
+    <nav class="nav nav-pills nav-justified justify-content-center">
+      <a class="nav-link cursor"
+         [class.active]="resultActive"
+         (click)="changeState()">Results</a>
+      <a class="nav-link cursor"
+         [class.active]="!resultActive"
+         (click)="changeState()">Favorites</a>
+    </nav>
+  </div>
+</div> -->
+<div class="progress mt-5" *ngIf="!loading_bar">
+  <div class="progress-bar progress-bar-striped progress-bar-animated active" style="width:50%"></div>
+  </div>
+<div class="container text-center">
+  <button id="result_button" class="btn btn-primary" (click)="results_change()" ng-click="favor_to_results()">Results</button>
+  <button id="favor_button"  class="btn btn-link" (click)="favorites_change()" ng-click="results_to_favor()">Favorites</button><br>
+  <script>
+  function results_change()
+  {
+     var results_x = document.getElementById('result_button').classList;
+     var favor_x = document.getElementById('favor_button').classList;
+     if(favor_x.contains('btn-primary'))
+     {
+        favor_x.remove("btn-primary");
+        favor_x.add("btn-link");
+        results_x.remove("btn-link");
+        results_x.add("btn-primary");
+     }
+  }
+  function favorites_change()
+  {
+     var results_x = document.getElementById('result_button').classList;
+     var favor_x = document.getElementById('favor_button').classList;
+     if(results_x.contains('btn-primary'))
+    {
+       results_x.remove("btn-primary");
+       results_x.add("btn-link");
+         favor_x.remove("btn-link");
+         favor_x.add("btn-primary");
+      }
+  }
+  </script>
+  </div>
+
+<div class="col-12"
+       *ngIf="!artDisp">
+      <div class="row justify-content-end mb-2 mb-lg-2">
+      <a href="{{twitter_text}}" target="_blank"><img src="https://csci571.com/hw/hw8/images/Twitter.png" height=50 width=50></a>
+    <button class="btn btn-light" ng-click="set_favor(current_x);" onclick="setFav($event)" > <i id="check_star" class="fa fa-star-o"></i> </button>
+    <script>
+    // function fav_star()
+    // {
+    // if(document.getElementById("check_star").classList.contains("fa-star-o"))
+    // {
+    // document.getElementById("check_star").classList.remove("fa-star-o");
+    // document.getElementById("check_star").classList.add("fa-star");
+    // }
+    // else
+    // {
+    // document.getElementById("check_star").classList.remove("fa-star");
+    // document.getElementById("check_star").classList.add("fa-star-o");
+    // }
+    // }
+    </script> 
+    </div>
+</div>
+
+  <!-- <div class="container detail_positioning" ng-hide="show_detail==false" id="Details">
+    <h2 class="d-flex justify-content-center mt-3">{{event_details.name}}</h2>
+    <div class="row d-flex justify-content-end">
+    <button class="btn btn-light mr-auto p-2" ng-click="list_function()"><i class="material-icons">keyboard_arrow_left</i>List</button>
+    <a href="{{twitter_text}}" target="_blank"><img src="https://csci571.com/hw/hw8/images/Twitter.png" height=50 width=50></a>
+    <button class="btn btn-light" ng-click="set_favor(current_x);" onclick="fav_star()" > <i id="check_star" class="fa fa-star-o"></i> </button>
+    <script>
+    function fav_star()
+    {
+    if(document.getElementById("check_star").classList.contains("fa-star-o"))
+    {
+    document.getElementById("check_star").classList.remove("fa-star-o");
+    document.getElementById("check_star").classList.add("fa-star");
+    }
+    else
+    {
+    document.getElementById("check_star").classList.remove("fa-star");
+    document.getElementById("check_star").classList.add("fa-star-o");
+    }
+    }
+    </script>      
+    </div> 
+    </div> -->
+<div *ngIf="no_records" class="container" >
+  <div class="alert alert-warning">
+    No records.
+  </div>
+</div>
+<div *ngIf="api_error" class="container">
+	<div class="alert alert-danger">
+        Failed to get search results. Invalid Request
+    </div>
+</div>
+<div [@flyIn] *ngIf="!main_event" class="col-12 table-responsive tab-content">
+  <div class="row justify-content-end mb-2 mb-lg-3">
+    <button (click)="list_details('details')" class="btn btn-light" >
+      <i class="material-icons align-bottom">
+        keyboard_arrow_right
+      </i>
+      Details
+    </button>
+    </div>
+  <table class="table table-striped table-light" *ngIf="event_name">
+    <thead>
+      <th>#</th>
+      <th>Date</th>
+      <th>Event</th>
+      <th>Category</th>
+      <th>VenueInfo</th>
+      <th>favorite</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let dat of date;let i = index;" >
+  <!-- <tr *ngFor="let i = index|orderBy : 'dates.start.localDate' " class = "highlight" > -->
+    <!-- <tr  ng-repeat="x in table_content|orderBy : 'dates.start.localDate' "></tr> -->
+    <td> {{i+1}} </td>
+    <td> {{dat}} </td>
+    <td> <a href="#Event" matTooltip="{{event_name[i]}}" id={{event_id[i]}} (click)="eventsFetch(event_id[i])"> {{event_name[i] | slice:0:35}} </a></td>
+
+    <!-- <td class="text-nowrap">
+      <span class="table-title"
+            [tooltip]= "{{event_name[i]}}"
+            placement="bottom"
+            (click)="eventsFetch(event_id[i])">
+        {{ (event_name[i] | truncate) || 'N/A' }}
+      </span>
+    </td> -->
+    <!-- <script>
+      $("tr.highlight").click(function(){
+          $(this).addClass("selected").siblings().removeClass("selected");
+      });
+      </script> -->
+    <td>{{category[i]}}</td>
+    <td>{{venueinfo[i]}}</td>
+    <!-- <td> <button class="btn btn-light" ng-click="remove_favor(x,$index+1)" ><i class="material-icons"><span class="material-icons">
+      star_rate
+      </span></i></button> </td> -->
+      <td (click)= "setFav(event_id[i],{'id':event_id[i],'Date':dat,'EventId':event_id[i],'EventName':event_name[i],'Category':category[i],'Venue':venueinfo[i]})"><i id="event_id[i]" [ngClass] = "isFav(event_id[i]) ? 'fa fa-star ' :'fa fa-star-o'" > </i> </td> 
+      <!-- <td><button  class="btn " style="background: transparent;"  (click)=setFav($event)><i class="material-icons star" [id] = i style="background: transparent;" [innerHTML]="fav_type">star_border</i></button></td> -->
+    <!-- <td><button class="btn btn-light" ng-click="set_favor(x)"><i id="{{x.name}}"class="fa fa-star-o"></i></button></td> -->
+   </tr> 
+  </tbody>
+</table>
+</div>
+
+
+
+<div *ngIf="fav" class="container" >
+  <table class="table table-striped table-light" >
+    <thead>
+      <th>#</th>
+      <th>Date</th>
+      <th>Event</th>
+      <th>Category</th>
+      <th>VenueInfo</th>
+      <th>favorite</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let fav of fav_data;let i = index;" >
+    <td> {{i+1}} </td>
+    <td> {{fav_data[i].Date | json}}</td>
+    <td> {{fav_data[i].EventName | json}}</td>
+    <td> {{fav_data[i].Category | json}}</td>
+    <td> {{fav_data[i].Venue | json}}</td>
+    <td> <i class="material-icons">delete</i></td>
+    <!-- <td> <a href="#Event" matTooltip="{{event_name[i]}}" id={{event_id[i]}} (click)="eventsFetch(event_id[i])"> {{event_name[i] | slice:0:35}} </a></td>
+   
+    <td>{{category[i]}}</td>
+    <td>{{venueinfo[i]}}</td>
+
+      <td (click)= "setFav(event_id[i],{'Date':dat,'EventId':event_id[i],'EventName':event_name[i],'Category':category[i],'Venue':venueinfo[i]})"><i id="event_id[i]" [ngClass] = "isFav(event_id[i]) ? 'fa fa-star ' :'fa fa-star-o'" > </i> </td>  -->
+
+   </tr> 
+  </tbody>
+</table>
+</div>
+
+
+
+
+<div [@flyIn] *ngIf="!artDisp" class="tab-content">
+  <div class="row justify-content-start mb-2 mb-lg-3">
+    <button (click)="list_details('list')" class="btn btn-light" >
+      <i class="material-icons align-bottom">
+        keyboard_arrow_left
+      </i>
+      List
+    </button>
+    </div>
+  <!--Tabs --> 
+  <h2 class="d-flex justify-content-center mt-3">{{event_details._embedded.attractions[0].name}}</h2>
+
+  <ul class="nav nav-tabs justify-content-end" role="tablist">
+    <li class="nav-item">
+    <a id = "Event_tab" class="nav-link active" data-toggle="tab" (click)="check_artist_team('Event')">Event</a>
+    </li>
+    <li class="nav-item">
+    <a id = "Artist1_tab" class="nav-link" data-toggle="tab" (click)="check_artist_team('Artist1')">Artist/Teams</a>
+    </li>
+    <li class="nav-item">
+    <a id = "Venue_tab" class="nav-link" data-toggle="tab" (click)="check_artist_team('Venue')">Venue</a>
+    </li>
+    </ul>
+
+ <div class="tab-content">
+
+ <div id="Event" class="container tab-pane active"><br>
+  <table ng-show="show_detail" class="table table-striped">
+  <tr *ngIf="event_details._embedded.venues[0].name!=undefined "><th>Artist / Team(s) </th><td>{{event_details._embedded.attractions[0].name }} | {{event_details._embedded.attractions[1].name}}</td></tr>
+  <tr *ngIf="event_details._embedded.venues[0].name!=undefined"><th class="">Venue</th><td class="">{{event_details._embedded.venues[0].name}}</td></tr>
+  <tr *ngIf="event_details.dates.start.localTime!=undefined"><th class="" style="width: 25%;">Time</th><td class="" style="width: 75%;">{{event_details.dates.start.localDate | date}} </td></tr>
+  <tr *ngIf="event_details.classifications!=undefined"><th class="">Category</th><td class="">{{event_details.classifications[0].genre.name}} | {{event_details.classifications[0].segment.name}}</td></tr>
+  <tr *ngIf="event_details.priceRanges!=undefined"><th class="">Price Range</th><td class="">${{event_details.priceRanges[0].min}} ~ ${{event_details.priceRanges[0].max}}</td></tr>
+  <tr *ngIf="event_details.dates!=undefined"><th class="">Ticket Status</th><td class="">{{event_details.dates.status.code}}</td></tr>
+  <tr *ngIf="event_details.url!=undefined"><th class="">Buy Ticket At</th><td class=""><a href="{{event_details.url}}" target="_blank">Ticketmaster</a></td></tr>
+  <tr *ngIf="event_details.seatmap!=undefined&&event_details.seatmap.staticUrl!=undefined"><th class="">Seat Map</th><td class=""> <a href ="{{event_details.seatmap.staticUrl}}" target="_blank" id="{{event_details.seatmap.staticUrl}}" (click)="prev_def($event,event_details.seatmap.staticUrl)" data-toggle="modal" data-target="#seatMap_Modal"> View Seat Map here</a></td></tr>
+  </table>
+  
+  </div> 
+  <div class="modal fade" id="seatMap_Modal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">View Seat Map</h2>
+  
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <img [src]=url_seat style="width: 100%;">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <!-- <div class="modal fade" id="seatMap_Modal" role="dialog">
+    <div class="modal-dialog">
+    
+      Modal content
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">View Seat Map</h2>
+  
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <img src={{event_details.seatmap.staticUrl}} style="width: 100%;">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div> -->
+
+   <!-- <div class="modal fade" id="seatMap_Modal" tabindex="-1" role="dialog" aria-labelledby="seatMap_Modal_label" area-hidden="true"> 
+    <div class="modal-dialog-centered fade modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+    <h5 class="modal-title" id="seatMap_Modal_label">View Seat Map</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span area-hidden = "true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+    <p><a *ngIf="event_details.seatmap.staticUrl!=undefined" href="{{event_details.seatmap.staticUrl}}" target="_blank"><img ng-show="event_details.seatmap.staticUrl!=undefined" src="{{event_details.seatmap.staticUrl}}" height=350 width=350></a></p>
+    </div>
+    <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    </div>
+    </div>
+    </div>
+     </div>   -->
+
+
+     
+
+  <div id="Artist1" class="container tab-pane" ><br>
+    <table ng-show="spotify_check" class="table table-striped"> 
+    <tr><th ng-show="spot_data[0].name!=undefined" style="">Name</th><td style="">{{spot_data[0].name}}</td></tr>
+    <tr ng-show="spot_data[1].followers.total!=undefined"><th class="">Followers</th><td class="">{{spot_data[1].followers.total!=undefined}}</td></tr>
+     <!-- <tr ng-show="spot_data[0].popularity!=undefined"><th class="" style="width: 25%;">Popularity</th><td class="" style="width: 75%;">{{spot_data[0].popularity}}</td></tr> -->
+    <tr ng-show="spot_data[0].popularity!=undefined"><th class="" style="width: 25%;">Popularity </th><td class="progress-wrapper"> {{spot_data[0].popularity}}
+      <div style="height: 20px;width: 20px;" class="row d-flex justify-content-center mt-10">
+        <div class="col-md-3">
+            <div class="progress blue"> <span class="progress-left d-flex justify-content-center"> <span class="progress-bar"></span> </span> <span class="progress-right"> <span class="progress-bar"></span> </span>
+                <div class="progress-value">{{spot_data[0].popularity}}</div> {{spot_data[0].popularity}}
+            </div>
+        </div>
+    </div>
+
+  <!-- <round-progress
+    [current]="10"
+    [max]="20"
+    [color]="'#45ccce'"
+    [background]="'#eaeaea'"
+    [radius]="15"
+    [stroke]="1"
+    [semicircle]="true"
+    [rounded]="true"
+    [clockwise]="false"
+    [responsive]="false"
+    [duration]="300"
+    [animation]="'easeInOutQuart'"
+    [animationDelay]="0">{{spot_data[0].popularity}}</round-progress> -->
+  
+  </td></tr>
+          
+          <!-- *ngIf="spot_data[0].external_urls!=undefined" -->
+
+    <tr ><th class="">Check at</th><td class=""><a href="{{spot_data[0].external_urls.spotify}}" target="_blank">Spotify</a></td></tr>               
+    </table>
+  </div> 
+
+<!-- --------------------------------------------------------------------------------VENUE TAB-----------------------------------------------------		 -->
+ <div id="Venue" class="container tab-pane"><br>
+
+  <!-- <h2 class="d-flex justify-content-center mt-3">{{event_details._embedded.venues[0].name}}</h2> -->
+  <table ng-show="show_detail" class="table table-striped">
+  <tr *ngIf="event_details._embedded.venues[0].address!=undefined"><th  style="">Address </th><td style="">{{event_details._embedded.venues[0].address.line1}}</td></tr>
+  <tr *ngIf="event_details._embedded.venues[0].name!=undefined"><th class="">City</th><td class="">{{event_details._embedded.venues[0].city.name}}, {{event_details._embedded.venues[0].state.name}}</td></tr>
+  <tr *ngIf="event_details._embedded.venues[0].boxOfficeInfo!=undefined"><th class="" style="width: 25%;">Phone Number</th><td class="" style="width: 75%;">{{event_details._embedded.venues[0].boxOfficeInfo.phoneNumberDetail}}</td></tr>
+  <tr *ngIf="event_details._embedded.venues[0].boxOfficeInfo!=undefined"><th class="">Open Hours</th><td class="">{{event_details._embedded.venues[0].boxOfficeInfo.openHoursDetail}}</td></tr>
+  <tr *ngIf="event_details._embedded.venues[0].generalInfo!=undefined"><th class="">General Rule</th><td class="">{{event_details._embedded.venues[0].generalInfo.generalRule}}</td></tr>
+  <tr *ngIf="event_details._embedded.venues[0].generalInfo!=undefined"><th class="">Child Rule</th><td class="">{{event_details._embedded.venues[0].generalInfo.childRule}}</td></tr>
+  </table>
+    <!-- <agm-map>[latitude]={{ven_loc_lat}} [longitide]={{ven_loc_long}} 
+      <agm-marker>[latitude]={{ven_loc_lat}} [longitide]={{ven_loc_long}} </agm-marker>
+    </agm-map> -->
+
+    <agm-map [latitude]="ven_loc_lat" [longitude]="ven_loc_long">
+      <agm-marker [latitude]="ven_loc_lat" [longitude]="ven_loc_long"></agm-marker>
+    </agm-map>
+  <!-- <div id="display_google_map">
+  <ng-map zoom="15" center="[event_details._embedded.venues[0].location.latitude, event_details._embedded.venues[0].location.longitude]">
+  <marker position="[event_details._embedded.venues[0].location.latitude, event_details._embedded.venues[0].location.longitude]"></marker>
+  </ng-map>
+  <div id="directions-panel" style="width: 100%; float:left; overflow: auto; padding: 0px 5px"></div>
+  </div>
+  </div> -->
+
+</div>
+</div>
+<!-- </div> -->

@@ -1,0 +1,41 @@
+.Top{
+    margin: 20px;  
+    width : 80%; 
+    border-color: #E8E8E8;
+    background-color: #F2F2F2;     
+}
+#heading{
+        text-align: center;
+        font-family : "Times New Roman";
+        font-style:italic;
+        font-weight:normal;
+        margin-top: -1px;
+}
+
+#category{
+  width : 45%;
+}
+#inputKeyword{
+    width : 70%;
+}
+
+.has-search .form-control {
+    padding-left: 2.375rem;
+}
+
+.has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+}
+.px-2 {
+    padding-left: 20.575%;
+    padding-right: 20.575%;
+  }
+ 
